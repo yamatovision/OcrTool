@@ -13,9 +13,12 @@ import {
 import { FileUpload } from './components/FileUpload';
 import { ImageList } from './components/ImageList';
 import { ProcessingStatus } from './components/ProcessingStatus';
+import { AuthCheck } from './components/AuthCheck';
+import { UserProfile } from './components/UserProfile';
 import { useFileUpload } from './hooks/useFileUpload';
 import { uploadFiles } from './services/api';
 import { ProcessingStatus as ProcessingStatusType } from './types';
+import { AuthProvider } from './contexts/AuthContext';
 
 const theme = createTheme({
   palette: {
@@ -118,109 +121,116 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Box
-        sx={{
-          minHeight: '100vh',
-          background: '#1A1B3A',
-          backgroundImage: 'radial-gradient(circle at 50% 0%, #2A2C5C 0%, #1A1B3A 100%)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: '100%',
-          py: 4,
-        }}
-      >
-        <Container 
-          maxWidth="md" 
-          sx={{ 
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            minHeight: '100%',
-          }}
-        >
-          <Paper
-            elevation={0}
+      <AuthProvider>
+        <AuthCheck>
+          <Box
             sx={{
-              p: { xs: 2, md: 4 },
-              background: 'rgba(35, 36, 80, 0.95)',
-              backdropFilter: 'blur(10px)',
-              width: '100%',
-              maxWidth: 800,
+              minHeight: '100vh',
+              background: '#1A1B3A',
+              backgroundImage: 'radial-gradient(circle at 50% 0%, #2A2C5C 0%, #1A1B3A 100%)',
               display: 'flex',
-              flexDirection: 'column',
               alignItems: 'center',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
+              justifyContent: 'center',
+              width: '100%',
+              py: 4,
             }}
           >
-            <Box 
-              sx={{
-                width: '100%',
-                textAlign: 'center',
-                mb: 4,
+            <Container 
+              maxWidth="md" 
+              sx={{ 
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minHeight: '100%',
               }}
             >
-              <Typography
-                variant="h4"
-                component="h1"
-                gutterBottom
-                sx={{
-                  background: 'linear-gradient(90deg, #E233FF 0%, #37B6FF 100%)',
-                  backgroundClip: 'text',
-                  WebkitBackgroundClip: 'text',
-                  color: 'transparent',
-                  mb: 1,
-                }}
-              >
-                文字起こし太郎くん
-              </Typography>
-              <Typography variant="body1" color="text.secondary">
-                画像から簡単にテキストを抽出できます
-              </Typography>
-            </Box>
-            
-            <Box sx={{ width: '100%', maxWidth: 500, mx: 'auto' }}>
-              <FileUpload onFileSelect={handleFiles} />
-            </Box>
-            
-            {error && (
-              <Typography color="error" mt={2} textAlign="center">
-                {error}
-              </Typography>
-            )}
-            
-            {uploadedFiles.length > 0 && (
-              <Box sx={{ width: '100%', mt: 3 }}>
-                <ImageList
-                  files={uploadedFiles}
-                  onRemove={removeFile}
-                  onReorder={reorderFiles}
-                />
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleUpload}
-                  disabled={processing.isProcessing}
-                  fullWidth
-                  size="large"
+              <Box sx={{ width: '100%' }}>
+                <UserProfile />
+                <Paper
+                  elevation={0}
                   sx={{
-                    mt: 3,
-                    maxWidth: 500,
-                    mx: 'auto',
-                    display: 'block',
+                    p: { xs: 2, md: 4 },
+                    background: 'rgba(35, 36, 80, 0.95)',
+                    backdropFilter: 'blur(10px)',
+                    width: '100%',
+                    maxWidth: 800,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
                   }}
                 >
-                  {processing.isProcessing ? '処理中...' : 'テキストを抽出する'}
-                </Button>
+                  <Box 
+                    sx={{
+                      width: '100%',
+                      textAlign: 'center',
+                      mb: 4,
+                    }}
+                  >
+                    <Typography
+                      variant="h4"
+                      component="h1"
+                      gutterBottom
+                      sx={{
+                        background: 'linear-gradient(90deg, #E233FF 0%, #37B6FF 100%)',
+                        backgroundClip: 'text',
+                        WebkitBackgroundClip: 'text',
+                        color: 'transparent',
+                        mb: 1,
+                      }}
+                    >
+                      文字起こし太郎くん
+                    </Typography>
+                    <Typography variant="body1" color="text.secondary">
+                      画像から簡単にテキストを抽出できます
+                    </Typography>
+                  </Box>
+                  
+                  <Box sx={{ width: '100%', maxWidth: 500, mx: 'auto' }}>
+                    <FileUpload onFileSelect={handleFiles} />
+                  </Box>
+                  
+                  {error && (
+                    <Typography color="error" mt={2} textAlign="center">
+                      {error}
+                    </Typography>
+                  )}
+                  
+                  {uploadedFiles.length > 0 && (
+                    <Box sx={{ width: '100%', mt: 3 }}>
+                      <ImageList
+                        files={uploadedFiles}
+                        onRemove={removeFile}
+                        onReorder={reorderFiles}
+                      />
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleUpload}
+                        disabled={processing.isProcessing}
+                        fullWidth
+                        size="large"
+                        sx={{
+                          mt: 3,
+                          maxWidth: 500,
+                          mx: 'auto',
+                          display: 'block',
+                        }}
+                      >
+                        {processing.isProcessing ? '処理中...' : 'テキストを抽出する'}
+                      </Button>
+                    </Box>
+                  )}
+                  
+                  <Box sx={{ width: '100%', maxWidth: 500, mx: 'auto' }}>
+                    <ProcessingStatus status={processing} />
+                  </Box>
+                </Paper>
               </Box>
-            )}
-            
-            <Box sx={{ width: '100%', maxWidth: 500, mx: 'auto' }}>
-              <ProcessingStatus status={processing} />
-            </Box>
-          </Paper>
-        </Container>
-      </Box>
+            </Container>
+          </Box>
+        </AuthCheck>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
