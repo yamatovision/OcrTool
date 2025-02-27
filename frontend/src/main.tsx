@@ -4,7 +4,7 @@ import './index.css'
 import App from './App.tsx'
 
 // .envファイルからAPIのURLを読み込むための設定
-import.meta.env.VITE_API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+// 環境変数はビルド時に埋め込まれるため、実行時に変更はできません
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
